@@ -17,4 +17,8 @@ export default class Piece {
         const currentSquare = board.findPiece(this);
         board.movePiece(currentSquare, newSquare);
     }
+
+    public canTakePiece(otherPiece: Piece): boolean {
+        return this.player !== otherPiece.player && otherPiece.constructor.name !== "King";
+    }
 }
