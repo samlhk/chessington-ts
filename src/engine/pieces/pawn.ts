@@ -11,9 +11,17 @@ export default class Pawn extends Piece {
     public getAvailableMoves(board: Board): Square[] {
 
         const currentSquare = board.findPiece(this);
+        
+        const validMoves = [];
+        validMoves.push(Square.at(currentSquare.row + (this.player === Player.WHITE ? 1 : -1), currentSquare.col));
 
-        const oneStep = Square.at(currentSquare.row + (this.player === Player.WHITE ? 1 : -1), currentSquare.col);
+        if (
+            this.player == Player.WHITE && currentSquare.row === 1
+            || this.player === Player.BLACK && currentSquare.row === 6
+        ) {
+            validMoves.push(Square.at(currentSquare.row + (this.player === Player.WHITE ? 2 : -2), currentSquare.col));
+        }
 
-        return [oneStep];
+        return validMoves;
     }
 }
