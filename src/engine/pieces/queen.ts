@@ -13,52 +13,19 @@ export default class Queen extends Piece {
 
         const validMoves = [];
 
-        const dirs = [-1, 1];
-        for (const dir of dirs) {
-            let newRow = currentSquare.row + dir;
-            while (newRow >= 0 && newRow < 8) {
-                const newSquare = Square.at(newRow, currentSquare.col);
-                const pieceOnSquare = board.getPiece(newSquare);
-                if (pieceOnSquare) {
-                    if (this.canTakePiece(pieceOnSquare)) {
-                        validMoves.push(newSquare);
-                    }
-                    break;
+        const cardinalDirs = [-1, 0, 1];
+        for (const rowDir of cardinalDirs) {
+            for (const colDir of cardinalDirs) {
+                if (Math.abs(rowDir) !== Math.abs(colDir)) {
+                    validMoves.push(...this.getValidMovesInDirection(board, currentSquare, rowDir, colDir));
                 }
-                validMoves.push(newSquare);
-                newRow += dir;
-            }
-            let newCol = currentSquare.col + dir;
-            while (newCol >= 0 && newCol < 8) {
-                const newSquare = Square.at(currentSquare.row, newCol);
-                const pieceOnSquare = board.getPiece(newSquare);
-                if (pieceOnSquare) {
-                    if (this.canTakePiece(pieceOnSquare)) {
-                        validMoves.push(newSquare);
-                    }
-                    break;
-                }
-                validMoves.push(newSquare);
-                newCol += dir;
             }
         }
 
-        for (const rowDir of dirs) {
-            for (const colDir of dirs) {
-                let [newRow, newCol] = [currentSquare.row + rowDir, currentSquare.col + colDir];
-                while (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
-                    const newSquare = Square.at(newRow, newCol);
-                    const pieceOnSquare = board.getPiece(newSquare);
-                    if (pieceOnSquare) {
-                        if (this.canTakePiece(pieceOnSquare)) {
-                            validMoves.push(newSquare);
-                        }
-                        break;
-                    } 
-                    validMoves.push(newSquare);
-                    newRow += rowDir;
-                    newCol += colDir;
-                }
+        const diagonalDirs = [-1, 1];
+        for (const rowDir of diagonalDirs) {
+            for (const colDir of diagonalDirs) {
+                validMoves.push(...this.getValidMovesInDirection(board, currentSquare, rowDir, colDir));
             }
         }
 
