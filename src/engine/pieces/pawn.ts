@@ -24,21 +24,34 @@ export default class Pawn extends Piece {
             twoStep = -2;
             initialRow = 6;
         }
-        
+
         const validMoves: Square[] = [];
 
         if (currentSquare.row === endOfBoardRow) return validMoves;
 
-        let nextSquare = Square.at(currentSquare.row + oneStep, currentSquare.col);
-        if (board.getPiece(nextSquare)) return validMoves;
+        const diagonalSquares = [
+            Square.at(currentSquare.row + oneStep, currentSquare.col - 1),
+            Square.at(currentSquare.row + oneStep, currentSquare.col + 1),
+        ];
+        for (const diagonal of diagonalSquares) {
+            if (diagonal.col >= 0 && diagonal.col < 8) {
+                const pieceOnSquare = board.getPiece(diagonal);
+                if (pieceOnSquare && this.canTakePiece(pieceOnSquare)) {
+                    validMoves.push(diagonal);
+                }
+            }
+        }
 
-        validMoves.push(nextSquare);
+        const forwardOneSquare = Square.at(currentSquare.row + oneStep, currentSquare.col);
+        if (board.getPiece(forwardOneSquare)) return validMoves;
+
+        validMoves.push(forwardOneSquare);
 
         if (currentSquare.row === initialRow) {
-            nextSquare = Square.at(currentSquare.row + twoStep, currentSquare.col);
-            if (board.getPiece(nextSquare)) return validMoves;
-            
-            validMoves.push(nextSquare);
+            const forwardTwoSquare = Square.at(currentSquare.row + twoStep, currentSquare.col);
+            if (board.getPiece(forwardTwoSquare)) return validMoves;
+
+            validMoves.push(forwardTwoSquare);
         }
 
         return validMoves;
