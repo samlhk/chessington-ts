@@ -12,14 +12,21 @@ export default class Pawn extends Piece {
 
         const currentSquare = board.findPiece(this);
         
-        const validMoves = [];
-        validMoves.push(Square.at(currentSquare.row + (this.player === Player.WHITE ? 1 : -1), currentSquare.col));
+        const validMoves: Square[] = [];
+
+        let nextSquare = Square.at(currentSquare.row + (this.player === Player.WHITE ? 1 : -1), currentSquare.col);
+        if (board.getPiece(nextSquare)) return validMoves;
+
+        validMoves.push(nextSquare);
 
         if (
             this.player == Player.WHITE && currentSquare.row === 1
             || this.player === Player.BLACK && currentSquare.row === 6
         ) {
-            validMoves.push(Square.at(currentSquare.row + (this.player === Player.WHITE ? 2 : -2), currentSquare.col));
+            nextSquare = Square.at(currentSquare.row + (this.player === Player.WHITE ? 2 : -2), currentSquare.col);
+            if (board.getPiece(nextSquare)) return validMoves;
+            
+            validMoves.push(nextSquare);
         }
 
         return validMoves;
