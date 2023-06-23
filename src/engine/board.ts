@@ -33,7 +33,11 @@ export default class Board {
 
     public movePiece(fromSquare: Square, toSquare: Square) {
         const movingPiece = this.getPiece(fromSquare);        
-        if (!!movingPiece && movingPiece.player === this.currentPlayer) {
+        if (
+            !!movingPiece 
+            && movingPiece.player === this.currentPlayer 
+            && movingPiece.getAvailableMoves(this).some((availableSquare) => availableSquare.equals(toSquare))
+        ) {
             this.setPiece(toSquare, movingPiece);
             this.setPiece(fromSquare, undefined);
             this.currentPlayer = (this.currentPlayer === Player.WHITE ? Player.BLACK : Player.WHITE);
