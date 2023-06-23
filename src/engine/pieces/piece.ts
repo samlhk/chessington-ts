@@ -22,7 +22,7 @@ export default class Piece {
         return this.player !== otherPiece.player && otherPiece.constructor.name !== "King";
     }
 
-    protected getValidMovesInDirection(board: Board, start: Square, rowDir: number, colDir: number): Square[] {
+    protected getValidMovesInDirection(board: Board, start: Square, rowDir: number, colDir: number, onlyMoveOnce: boolean = false): Square[] {
         const validMoves = [];
 
         let isWithinBoundaries;
@@ -47,6 +47,8 @@ export default class Piece {
             validMoves.push(newSquare);
             newRow += rowDir;
             newCol += colDir;
+            
+            if (onlyMoveOnce) break;
         }
 
         return validMoves;

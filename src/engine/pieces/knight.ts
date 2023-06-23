@@ -18,14 +18,7 @@ export default class Knight extends Piece {
         for (const rowDir of dirs) {
             for (const colDir of dirs) {
                 if (Math.abs(rowDir) !== Math.abs(colDir)) {
-                    let [newRow, newCol] = [currentSquare.row + rowDir, currentSquare.col + colDir];
-                    if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
-                        const newSquare = Square.at(newRow, newCol);
-                        const pieceOnSquare = board.getPiece(newSquare);
-                        if (!pieceOnSquare || this.canTakePiece(pieceOnSquare)) {
-                            validMoves.push(newSquare);
-                        }
-                    }
+                    validMoves.push(...this.getValidMovesInDirection(board, currentSquare, rowDir, colDir, true));
                 }
             }
         }
