@@ -36,7 +36,6 @@ export default class Board {
         if (
             !!movingPiece 
             && movingPiece.player === this.currentPlayer 
-            && movingPiece.getAvailableMoves(this).some((availableSquare) => availableSquare.equals(toSquare))
         ) {
             this.setPiece(toSquare, movingPiece);
             this.setPiece(fromSquare, undefined);
