@@ -14,15 +14,9 @@ export default class Pawn extends Piece {
 
         let endOfBoardRow, oneStep, twoStep, initialRow;
         if (this.player === Player.WHITE) {
-            endOfBoardRow = 7;
-            oneStep = 1;
-            twoStep = 2;
-            initialRow = 1;
+            endOfBoardRow = 7, oneStep = 1, twoStep = 2, initialRow = 1;
         } else {
-            endOfBoardRow = 0;
-            oneStep = -1;
-            twoStep = -2;
-            initialRow = 6;
+            endOfBoardRow = 0, oneStep = -1, twoStep = -2, initialRow = 6;
         }
 
         const validMoves: Square[] = [];
@@ -48,10 +42,10 @@ export default class Pawn extends Piece {
         validMoves.push(forwardOneSquare);
 
         if (currentSquare.row === initialRow) {
-            const forwardTwoSquare = Square.at(currentSquare.row + twoStep, currentSquare.col);
-            if (board.getPiece(forwardTwoSquare)) return validMoves;
+            const forwardTwoSquares = Square.at(currentSquare.row + twoStep, currentSquare.col);
+            if (board.getPiece(forwardTwoSquares)) return validMoves;
 
-            validMoves.push(forwardTwoSquare);
+            validMoves.push(forwardTwoSquares);
         }
 
         return validMoves;
