@@ -13,25 +13,34 @@ export default class Queen extends Piece {
 
         const validMoves = [];
 
-        for (let i = 0; i < 8; i++) {
-            if (currentSquare.col !== i) {
-                validMoves.push(Square.at(currentSquare.row, i));
+        const dirs = [-1, 1];
+        for (const dir of dirs) {
+            let newRow = currentSquare.row + dir;
+            while (newRow >= 0 && newRow < 8) {
+                const newSquare = Square.at(newRow, currentSquare.col)
+                if (board.getPiece(newSquare)) break;
+                validMoves.push(newSquare);
+                newRow += dir;
+            }
+            let newCol = currentSquare.col + dir;
+            while (newCol >= 0 && newCol < 8) {
+                const newSquare = Square.at(currentSquare.row, newCol)
+                if (board.getPiece(newSquare)) break;
+                validMoves.push(newSquare);
+                newCol += dir;
             }
         }
 
-        for (let i = 0; i < 8; i++) {
-            if (currentSquare.row !== i) {
-                validMoves.push(Square.at(i, currentSquare.col));
-            }
-        }
-
-        const dirs = [[1, 1], [1, -1], [-1, -1], [-1, 1]];
-        for (const [rowDir, colDir] of dirs) {
-            let [newRow, newCol] = [currentSquare.row + rowDir, currentSquare.col + colDir];
-            while (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
-                validMoves.push(Square.at(newRow, newCol));
-                newRow += rowDir;
-                newCol += colDir;
+        for (const rowDir of dirs) {
+            for (const colDir of dirs) {
+                let [newRow, newCol] = [currentSquare.row + rowDir, currentSquare.col + colDir];
+                while (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
+                    const newSquare = Square.at(newRow, newCol);
+                    if (board.getPiece(newSquare)) break;
+                    validMoves.push(newSquare);
+                    newRow += rowDir;
+                    newCol += colDir;
+                }
             }
         }
 
