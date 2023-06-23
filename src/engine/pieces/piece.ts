@@ -25,8 +25,17 @@ export default class Piece {
     protected getValidMovesInDirection(board: Board, start: Square, rowDir: number, colDir: number): Square[] {
         const validMoves = [];
 
+        let isWithinBoundaries;
+        if (rowDir === 0) {
+            isWithinBoundaries = (r: number, c: number) => c >= 0 && c < 8;
+        } else if (colDir === 0) {
+            isWithinBoundaries = (r: number, c: number) => r >= 0 && r < 8;
+        } else {
+            isWithinBoundaries = (r: number, c: number) => r >= 0 && r < 8 && c >= 0 && c < 8;
+        }
+
         let [newRow, newCol] = [start.row + rowDir, start.col + colDir];
-        while (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
+        while (isWithinBoundaries(newRow, newCol)) {
             const newSquare = Square.at(newRow, newCol);
             const pieceOnSquare = board.getPiece(newSquare);
             if (pieceOnSquare) {
