@@ -4,6 +4,8 @@ import Board from '../board';
 import Square from '../square';
 
 export default class Pawn extends Piece {
+    public roundAdvancingTwoSquares: number = -1;
+
     public constructor(player: Player) {
         super(player);
     }
@@ -22,6 +24,19 @@ export default class Pawn extends Piece {
         const validMoves: Square[] = [];
 
         if (currentSquare.row === endOfBoardRow) return validMoves;
+
+        const adjacentSquares = [
+            Square.at(currentSquare.row, currentSquare.col - 1),
+            Square.at(currentSquare.row, currentSquare.col + 1),
+        ];
+        for (const adjacent of adjacentSquares) {
+            if (adjacent.col >= 0 && adjacent.col < 8) {
+                const pieceOnSquare = board.getPiece(adjacent);
+                if (pieceOnSquare && pieceOnSquare.constructor.name === "Pawn" && (board.turnCount - (pieceOnSquare as Pawn).roundAdvancingTwoSquares) === 1) {
+                    validMoves.push(Square.at(adjacent.row + oneStep, adjacent.col));
+                }
+            }
+        }
 
         const diagonalSquares = [
             Square.at(currentSquare.row + oneStep, currentSquare.col - 1),

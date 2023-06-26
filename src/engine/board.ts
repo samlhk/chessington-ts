@@ -2,14 +2,17 @@ import Player from './player';
 import GameSettings from './gameSettings';
 import Square from './square';
 import Piece from './pieces/piece';
+import Pawn from './pieces/pawn';
 
 export default class Board {
     public currentPlayer: Player;
     private readonly board: (Piece | undefined)[][];
+    public turnCount: number;
 
     public constructor(currentPlayer?: Player) {
         this.currentPlayer = currentPlayer ? currentPlayer : Player.WHITE;
         this.board = this.createBoard();
+        this.turnCount = 1;
     }
 
     public setPiece(square: Square, piece: Piece | undefined) {
@@ -37,9 +40,20 @@ export default class Board {
             !!movingPiece 
             && movingPiece.player === this.currentPlayer 
         ) {
+            if (movingPiece.constructor.name === "Pawn") {
+                if (Math.abs(toSquare.row - fromSquare.row) === 2) {
+                    (movingPiece as Pawn).roundAdvancingTwoSquares = this.turnCount;
+                }
+                if (Math.abs(toSquare.row - fromSquare.row) === 1 && Math.abs(toSquare.col - fromSquare.col) === 1 && !this.getPiece(toSquare)) {
+                    this.setPiece(Square.at(fromSquare.row, toSquare.col), undefined);
+                    
+
+                }
+            }
             this.setPiece(toSquare, movingPiece);
             this.setPiece(fromSquare, undefined);
             this.currentPlayer = (this.currentPlayer === Player.WHITE ? Player.BLACK : Player.WHITE);
+            this.turnCount++;
         }
     }
 
