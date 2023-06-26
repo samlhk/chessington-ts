@@ -13,12 +13,12 @@ export default class Knight extends Piece {
         
         const validMoves = [];
 
-        const dirs = [-2, -1, 1, 2];
+        const directions = [-2, -1, 1, 2];
 
-        for (const rowDir of dirs) {
-            for (const colDir of dirs) {
+        for (const rowDir of directions) {
+            for (const colDir of directions) {
                 if (Math.abs(rowDir) !== Math.abs(colDir)) {
-                    validMoves.push(...this.getValidMovesInDirection(board, currentSquare, rowDir, colDir, true));
+                    validMoves.push(...this.getValidMovesInDirectionForOneStep(board, currentSquare, rowDir, colDir));
                 }
             }
         }

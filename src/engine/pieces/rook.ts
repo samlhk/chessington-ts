@@ -14,11 +14,11 @@ export default class Rook extends Piece {
 
         const validMoves: Square[] = [];
 
-        const dirs = [-1, 0, 1];
-        for (const rowDir of dirs) {
-            for (const colDir of dirs) {
+        const directions = [-1, 0, 1];
+        for (const rowDir of directions) {
+            for (const colDir of directions) {
                 if (Math.abs(rowDir) !== Math.abs(colDir)) {
-                    validMoves.push(...this.getValidMovesInDirection(board, currentSquare, rowDir, colDir));
+                    validMoves.push(...this.getValidMovesInDirectionUntilBoundary(board, currentSquare, rowDir, colDir));
                 }
             }
         }

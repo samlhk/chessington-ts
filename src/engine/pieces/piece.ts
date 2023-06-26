@@ -22,17 +22,18 @@ export default class Piece {
         return this.player !== otherPiece.player && otherPiece.constructor.name !== "King";
     }
 
-    protected getValidMovesInDirection(board: Board, start: Square, rowDir: number, colDir: number, onlyMoveOnce: boolean = false): Square[] {
+    protected getValidMovesInDirectionUntilBoundary(board: Board, start: Square, rowDir: number, colDir: number): Square[] {
+        return this.getValidMovesInDirection(board, start, rowDir, colDir, false);
+    }
+
+    protected getValidMovesInDirectionForOneStep(board: Board, start: Square, rowDir: number, colDir: number): Square[] {
+        return this.getValidMovesInDirection(board, start, rowDir, colDir, true);
+    }
+
+    private getValidMovesInDirection(board: Board, start: Square, rowDir: number, colDir: number, moveMaxOneStep: boolean = false): Square[] {
         const validMoves = [];
 
-        let isWithinBoundaries;
-        if (rowDir === 0) {
-            isWithinBoundaries = (r: number, c: number) => c >= 0 && c < 8;
-        } else if (colDir === 0) {
-            isWithinBoundaries = (r: number, c: number) => r >= 0 && r < 8;
-        } else {
-            isWithinBoundaries = (r: number, c: number) => r >= 0 && r < 8 && c >= 0 && c < 8;
-        }
+        const isWithinBoundaries = this.getBoundaryChecker(rowDir, colDir);
 
         let [newRow, newCol] = [start.row + rowDir, start.col + colDir];
         while (isWithinBoundaries(newRow, newCol)) {
@@ -48,9 +49,19 @@ export default class Piece {
             newRow += rowDir;
             newCol += colDir;
             
-            if (onlyMoveOnce) break;
+            if (moveMaxOneStep) break;
         }
 
         return validMoves;
+    }
+
+    private getBoundaryChecker(rowDir: number, colDir: number): (r: number, c: number) => boolean {
+        if (rowDir === 0) {
+            return (r: number, c: number) => c >= 0 && c < 8;
+        } else if (colDir === 0) {
+            return (r: number, c: number) => r >= 0 && r < 8;
+        } else {
+            return (r: number, c: number) => r >= 0 && r < 8 && c >= 0 && c < 8;
+        }
     }
 }

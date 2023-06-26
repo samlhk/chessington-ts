@@ -13,12 +13,12 @@ export default class King extends Piece {
 
         const validMoves = [];
 
-        const dirs = [-1, 0, 1];
+        const directions = [-1, 0, 1];
 
-        for (const rowDir of dirs) {
-            for (const colDir of dirs) {
+        for (const rowDir of directions) {
+            for (const colDir of directions) {
                 if (rowDir === 0 && colDir === 0) continue;
-                validMoves.push(...this.getValidMovesInDirection(board, currentSquare, rowDir, colDir, true));
+                validMoves.push(...this.getValidMovesInDirectionForOneStep(board, currentSquare, rowDir, colDir));
             }
         }
 

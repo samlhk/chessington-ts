@@ -13,19 +13,19 @@ export default class Queen extends Piece {
 
         const validMoves = [];
 
-        const cardinalDirs = [-1, 0, 1];
-        for (const rowDir of cardinalDirs) {
-            for (const colDir of cardinalDirs) {
+        const cardinalDirections = [-1, 0, 1];
+        for (const rowDir of cardinalDirections) {
+            for (const colDir of cardinalDirections) {
                 if (Math.abs(rowDir) !== Math.abs(colDir)) {
-                    validMoves.push(...this.getValidMovesInDirection(board, currentSquare, rowDir, colDir));
+                    validMoves.push(...this.getValidMovesInDirectionUntilBoundary(board, currentSquare, rowDir, colDir));
                 }
             }
         }
 
-        const diagonalDirs = [-1, 1];
-        for (const rowDir of diagonalDirs) {
-            for (const colDir of diagonalDirs) {
-                validMoves.push(...this.getValidMovesInDirection(board, currentSquare, rowDir, colDir));
+        const diagonalDirections = [-1, 1];
+        for (const rowDir of diagonalDirections) {
+            for (const colDir of diagonalDirections) {
+                validMoves.push(...this.getValidMovesInDirectionUntilBoundary(board, currentSquare, rowDir, colDir));
             }
         }
 

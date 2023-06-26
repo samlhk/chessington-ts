@@ -14,10 +14,10 @@ export default class Bishop extends Piece {
 
         const validMoves = [];
 
-        const dirs = [-1, 1];
-        for (const rowDir of dirs) {
-            for (const colDir of dirs) {
-                validMoves.push(...this.getValidMovesInDirection(board, currentSquare, rowDir, colDir));
+        const directions = [-1, 1];
+        for (const rowDir of directions) {
+            for (const colDir of directions) {
+                validMoves.push(...this.getValidMovesInDirectionUntilBoundary(board, currentSquare, rowDir, colDir));
             }
         }
 
