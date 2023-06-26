@@ -3,6 +3,10 @@ import Board from '../../../src/engine/board';
 import Player from '../../../src/engine/player';
 import Square from '../../../src/engine/square';
 import Pawn from '../../../src/engine/pieces/pawn';
+import Rook from '../../../src/engine/pieces/rook';
+import { assert } from 'chai';
+import Knight from '../../../src/engine/pieces/knight';
+import Queen from '../../../src/engine/pieces/queen';
 
 describe('King', () => {
     let board: Board;
@@ -74,4 +78,255 @@ describe('King', () => {
 
         moves.should.not.deep.include(Square.at(5, 5));
     });
+
+    describe('castling', () => {
+        describe('white king', () => {
+            let king: King;
+            let leftRook: Rook;
+            let rightRook: Rook;
+            beforeEach(() => {
+                board = new Board(Player.WHITE);
+                king = new King(Player.WHITE);
+                board.setPiece(Square.at(0, 4), king);
+                leftRook = new Rook(Player.WHITE);
+                board.setPiece(Square.at(0, 0), leftRook);
+                rightRook = new Rook(Player.WHITE);
+                board.setPiece(Square.at(0, 7), rightRook);
+            });
+
+            it('king can castle king side', () => {        
+                const moves = king.getAvailableMoves(board);
+                moves.should.deep.include(Square.at(0, 6));
+            });
+
+            it('rook moves when castling king side', () => {     
+                board.movePiece(Square.at(0, 4), Square.at(0, 6));
+                assert(board.getPiece(Square.at(0, 5)) === rightRook);
+            });
+
+            it('king can castle queen side', () => {        
+                const moves = king.getAvailableMoves(board);
+                moves.should.deep.include(Square.at(0, 2));
+            });
+
+            it('rook moves when castling queen side', () => {     
+                board.movePiece(Square.at(0, 4), Square.at(0, 2));
+                assert(board.getPiece(Square.at(0, 3)) === leftRook);
+            });
+
+            it('king cannot castle if king has moved before', () => {   
+                const blackDummy = new King(Player.BLACK);
+                board.setPiece(Square.at(7, 7), blackDummy);
+
+                board.movePiece(Square.at(0, 4), Square.at(1, 4));
+                board.movePiece(Square.at(7, 7), Square.at(7, 6));
+                board.movePiece(Square.at(1, 4), Square.at(0, 4));
+                board.movePiece(Square.at(7, 6), Square.at(7, 5));
+                
+                const moves = king.getAvailableMoves(board);
+                moves.should.not.deep.include(Square.at(0, 6));
+                moves.should.not.deep.include(Square.at(0, 2));
+            });
+
+            it('king cannot castle king side if right rook has moved before', () => {   
+                const blackDummy = new King(Player.BLACK);
+                board.setPiece(Square.at(7, 7), blackDummy);
+
+                board.movePiece(Square.at(0, 7), Square.at(0, 6));
+                board.movePiece(Square.at(7, 7), Square.at(7, 6));
+                board.movePiece(Square.at(0, 6), Square.at(0, 7));
+                board.movePiece(Square.at(7, 6), Square.at(7, 5));
+                
+                const moves = king.getAvailableMoves(board);
+                moves.should.not.deep.include(Square.at(0, 6));
+            });
+
+            it('king cannot castle queen side if left rook has moved before', () => {   
+                const blackDummy = new King(Player.BLACK);
+                board.setPiece(Square.at(7, 7), blackDummy);
+
+                board.movePiece(Square.at(0, 0), Square.at(0, 1));
+                board.movePiece(Square.at(7, 7), Square.at(7, 6));
+                board.movePiece(Square.at(0, 1), Square.at(0, 0));
+                board.movePiece(Square.at(7, 6), Square.at(7, 5));
+                
+                const moves = king.getAvailableMoves(board);
+                moves.should.not.deep.include(Square.at(0, 2));
+            });
+
+            it('king cannot castle king side if there is a piece in between', () => {
+                const knight = new Knight(Player.WHITE);
+                board.setPiece(Square.at(0, 6), knight);
+
+                const moves = king.getAvailableMoves(board);
+                moves.should.not.deep.include(Square.at(0, 6));
+            });
+
+            it('king cannot castle queen side if there is a piece in between', () => {
+                const knight = new Knight(Player.WHITE);
+                board.setPiece(Square.at(0, 1), knight);
+
+                const moves = king.getAvailableMoves(board);
+                moves.should.not.deep.include(Square.at(0, 2));
+            });
+
+            it('king cannot castle if in check', () => {
+                const blackQueen = new Queen(Player.BLACK);
+                board.setPiece(Square.at(7, 4), blackQueen);
+
+                const moves = king.getAvailableMoves(board);
+                moves.should.not.deep.include(Square.at(0, 2));
+                moves.should.not.deep.include(Square.at(0, 6));
+            });
+
+            it('king cannot castle king side if intermediate position in check', () => {
+                const blackQueen = new Queen(Player.BLACK);
+                board.setPiece(Square.at(7, 5), blackQueen);
+
+                const moves = king.getAvailableMoves(board);
+                moves.should.not.deep.include(Square.at(0, 6));
+            });
+
+            it('king cannot castle king side if end position in check', () => {
+                const blackQueen = new Queen(Player.BLACK);
+                board.setPiece(Square.at(7, 6), blackQueen);
+
+                const moves = king.getAvailableMoves(board);
+                moves.should.not.deep.include(Square.at(0, 6));
+            });
+
+            it('king cannot castle queen side if intermediate position in check', () => {
+                const blackQueen = new Queen(Player.BLACK);
+                board.setPiece(Square.at(7, 3), blackQueen);
+
+                const moves = king.getAvailableMoves(board);
+                moves.should.not.deep.include(Square.at(0, 2));
+            });
+
+            it('king cannot castle queen side if end position in check', () => {
+                const blackQueen = new Queen(Player.BLACK);
+                board.setPiece(Square.at(7, 2), blackQueen);
+
+                const moves = king.getAvailableMoves(board);
+                moves.should.not.deep.include(Square.at(0, 2));
+            });
+        });
+
+        describe('black king', () => {
+            let king: King;
+            let leftRook: Rook;
+            let rightRook: Rook;
+            beforeEach(() => {
+                board = new Board(Player.BLACK);
+                king = new King(Player.WHITE);
+                board.setPiece(Square.at(7, 4), king);
+                leftRook = new Rook(Player.WHITE);
+                board.setPiece(Square.at(7, 0), leftRook);
+                rightRook = new Rook(Player.WHITE);
+                board.setPiece(Square.at(7, 7), rightRook);
+            });
+
+            it('king can castle king side', () => {        
+                const moves = king.getAvailableMoves(board);
+                moves.should.deep.include(Square.at(7, 6));
+            });
+
+            it('rook moves when castling king side', () => {     
+                board.movePiece(Square.at(7, 4), Square.at(7, 6));
+                assert(board.getPiece(Square.at(7, 5)) === rightRook);
+            });
+
+            it('king can castle queen side', () => {        
+                const moves = king.getAvailableMoves(board);
+                moves.should.deep.include(Square.at(7, 2));
+            });
+
+            it('rook moves when castling queen side', () => {     
+                board.movePiece(Square.at(7, 4), Square.at(7, 2));
+                assert(board.getPiece(Square.at(7, 3)) === leftRook);
+            });
+
+            it('king cannot castle if king has moved before', () => {   
+                const whiteDummy = new King(Player.WHITE);
+                board.setPiece(Square.at(0, 0), whiteDummy);
+
+                board.movePiece(Square.at(7, 4), Square.at(7, 3));
+                board.movePiece(Square.at(0, 0), Square.at(0, 1));
+                board.movePiece(Square.at(7, 4), Square.at(7, 3));
+                board.movePiece(Square.at(0, 1), Square.at(0, 2));
+                
+                const moves = king.getAvailableMoves(board);
+                moves.should.not.deep.include(Square.at(7, 6));
+                moves.should.not.deep.include(Square.at(7, 2));
+            });
+
+            it('king cannot castle king side if right rook has moved before', () => {   
+                const whiteDummy = new King(Player.WHITE);
+                board.setPiece(Square.at(0, 0), whiteDummy);
+
+                board.movePiece(Square.at(7, 7), Square.at(7, 6));
+                board.movePiece(Square.at(0, 0), Square.at(0, 6));
+                board.movePiece(Square.at(7, 6), Square.at(7, 7));
+                board.movePiece(Square.at(0, 6), Square.at(0, 5));
+                
+                const moves = king.getAvailableMoves(board);
+                moves.should.not.deep.include(Square.at(7, 6));
+            });
+
+            it('king cannot castle queen side if left rook has moved before', () => {   
+                const whiteDummy = new King(Player.WHITE);
+                board.setPiece(Square.at(0, 0), whiteDummy);
+
+                board.movePiece(Square.at(7, 0), Square.at(7, 1));
+                board.movePiece(Square.at(0, 0), Square.at(0, 6));
+                board.movePiece(Square.at(7, 1), Square.at(7, 0));
+                board.movePiece(Square.at(0, 6), Square.at(0, 5));
+                
+                const moves = king.getAvailableMoves(board);
+                moves.should.not.deep.include(Square.at(7, 2));
+            });
+
+            it('king cannot castle king side if there is a piece in between', () => {
+                const knight = new Knight(Player.WHITE);
+                board.setPiece(Square.at(7, 6), knight);
+
+                const moves = king.getAvailableMoves(board);
+                moves.should.not.deep.include(Square.at(7, 6));
+            });
+
+            it('king cannot castle queen side if there is a piece in between', () => {
+                const knight = new Knight(Player.WHITE);
+                board.setPiece(Square.at(7, 1), knight);
+
+                const moves = king.getAvailableMoves(board);
+                moves.should.not.deep.include(Square.at(7, 2));
+            });
+
+            it('king cannot castle if in check', () => {
+                const whiteQueen = new Queen(Player.WHITE);
+                board.setPiece(Square.at(0, 4), whiteQueen);
+
+                const moves = king.getAvailableMoves(board);
+                moves.should.not.deep.include(Square.at(7, 2));
+                moves.should.not.deep.include(Square.at(7, 6));
+            });
+
+            it('king cannot castle king side if intermediate position in check', () => {
+                const whiteQueen = new Queen(Player.WHITE);
+                board.setPiece(Square.at(0, 5), whiteQueen);
+
+                const moves = king.getAvailableMoves(board);
+                moves.should.not.deep.include(Square.at(7, 6));
+            });
+
+            it('king cannot castle queen side if end position in check', () => {
+                const blackQueen = new Queen(Player.WHITE);
+                board.setPiece(Square.at(0, 2), blackQueen);
+
+                const moves = king.getAvailableMoves(board);
+                moves.should.not.deep.include(Square.at(7, 2));
+            });
+        });
+    });
+
 });
