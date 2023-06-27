@@ -35,20 +35,14 @@ export default class Board {
     }
 
     public movePiece(fromSquare: Square, toSquare: Square) {
-        const movingPiece = this.getPiece(fromSquare);        
+        const movingPiece = this.getPiece(fromSquare);
         if (
-            !!movingPiece 
-            && movingPiece.player === this.currentPlayer 
+            !!movingPiece
+            && movingPiece.player === this.currentPlayer
         ) {
-            if (movingPiece.constructor.name === "Pawn") {
-                if (Math.abs(toSquare.row - fromSquare.row) === 2) {
-                    (movingPiece as Pawn).roundAdvancingTwoSquares = this.turnCount;
-                }
-                if (Math.abs(toSquare.row - fromSquare.row) === 1 && Math.abs(toSquare.col - fromSquare.col) === 1 && !this.getPiece(toSquare)) {
-                    this.setPiece(Square.at(fromSquare.row, toSquare.col), undefined);
-                    
-
-                }
+            if (movingPiece instanceof Pawn) {
+                this.recordPawnAdvancingTwoSquares(movingPiece, fromSquare, toSquare);
+                this.checkEnPasantCapture(fromSquare, toSquare);
             }
             this.setPiece(toSquare, movingPiece);
             this.setPiece(fromSquare, undefined);
@@ -63,5 +57,17 @@ export default class Board {
             board[i] = new Array(GameSettings.BOARD_SIZE);
         }
         return board;
+    }
+
+    private recordPawnAdvancingTwoSquares(movingPiece: Piece, fromSquare: Square, toSquare: Square) {
+        if (Math.abs(toSquare.row - fromSquare.row) === 2) {
+            (movingPiece as Pawn).roundAdvancingTwoSquares = this.turnCount;
+        }
+    }
+
+    private checkEnPasantCapture(fromSquare: Square, toSquare: Square) {
+        if (Math.abs(toSquare.row - fromSquare.row) === 1 && Math.abs(toSquare.col - fromSquare.col) === 1 && !this.getPiece(toSquare)) {
+            this.setPiece(Square.at(fromSquare.row, toSquare.col), undefined);
+        }
     }
 }

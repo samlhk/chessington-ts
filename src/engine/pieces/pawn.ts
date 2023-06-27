@@ -32,7 +32,7 @@ export default class Pawn extends Piece {
         for (const adjacent of adjacentSquares) {
             if (adjacent.col >= 0 && adjacent.col < 8) {
                 const pieceOnSquare = board.getPiece(adjacent);
-                if (pieceOnSquare && pieceOnSquare.constructor.name === "Pawn" && (board.turnCount - (pieceOnSquare as Pawn).roundAdvancingTwoSquares) === 1) {
+                if (pieceOnSquare && pieceOnSquare instanceof Pawn && (board.turnCount - (pieceOnSquare as Pawn).roundAdvancingTwoSquares) === 1) {
                     validMoves.push(Square.at(adjacent.row + oneStep, adjacent.col));
                 }
             }
