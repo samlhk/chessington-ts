@@ -319,6 +319,22 @@ describe('King', () => {
                 moves.should.not.deep.include(Square.at(7, 6));
             });
 
+            it('king cannot castle queen side if intermediate position in check', () => {
+                const whiteQueen = new Queen(Player.WHITE);
+                board.setPiece(Square.at(0, 3), whiteQueen);
+
+                const moves = king.getAvailableMoves(board);
+                moves.should.not.deep.include(Square.at(7, 2));
+            });
+
+            it('king cannot castle king side if end position in check', () => {
+                const blackQueen = new Queen(Player.WHITE);
+                board.setPiece(Square.at(0, 6), blackQueen);
+
+                const moves = king.getAvailableMoves(board);
+                moves.should.not.deep.include(Square.at(7, 6));
+            });
+
             it('king cannot castle queen side if end position in check', () => {
                 const blackQueen = new Queen(Player.WHITE);
                 board.setPiece(Square.at(0, 2), blackQueen);
