@@ -42,8 +42,8 @@ export default class Board {
             && movingPiece.player === this.currentPlayer
         ) {
             if (movingPiece.pieceType === PieceType.PAWN) {
-                this.recordPawnAdvancingTwoSquares(movingPiece, fromSquare, toSquare);
-                this.checkEnPasantCapture(fromSquare, toSquare);
+                this.recordIfPawnAdvancingTwoSquares(movingPiece, fromSquare, toSquare);
+                this.removePieceIfEnPassantCapture(fromSquare, toSquare);
             }
             this.setPiece(toSquare, movingPiece);
             this.setPiece(fromSquare, undefined);
@@ -60,13 +60,13 @@ export default class Board {
         return board;
     }
 
-    private recordPawnAdvancingTwoSquares(movingPiece: Piece, fromSquare: Square, toSquare: Square) {
+    private recordIfPawnAdvancingTwoSquares(movingPiece: Piece, fromSquare: Square, toSquare: Square) {
         if (Math.abs(toSquare.row - fromSquare.row) === 2) {
             (movingPiece as Pawn).roundAdvancingTwoSquares = this.turnCount;
         }
     }
 
-    private checkEnPasantCapture(fromSquare: Square, toSquare: Square) {
+    private removePieceIfEnPassantCapture(fromSquare: Square, toSquare: Square) {
         if (Math.abs(toSquare.row - fromSquare.row) === 1 && Math.abs(toSquare.col - fromSquare.col) === 1 && !this.getPiece(toSquare)) {
             this.setPiece(Square.at(fromSquare.row, toSquare.col), undefined);
         }
