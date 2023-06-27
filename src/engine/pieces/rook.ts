@@ -5,6 +5,8 @@ import Square from '../square';
 import PieceType from '../pieceType';
 
 export default class Rook extends Piece {
+    public hasMoved = false;
+    
     public constructor(player: Player) {
         super(player);
         this.pieceType = PieceType.ROOK;

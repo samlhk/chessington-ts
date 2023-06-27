@@ -4,6 +4,8 @@ import Square from './square';
 import Piece from './pieces/piece';
 import Pawn from './pieces/pawn';
 import PieceType from './pieceType';
+import King from './pieces/king';
+import Rook from './pieces/rook';
 
 export default class Board {
     public currentPlayer: Player;
@@ -44,6 +46,21 @@ export default class Board {
             if (movingPiece.pieceType === PieceType.PAWN) {
                 this.recordIfPawnAdvancingTwoSquares(movingPiece, fromSquare, toSquare);
                 this.removePieceIfEnPassantCapture(fromSquare, toSquare);
+            } else if (movingPiece.pieceType === PieceType.KING) {
+                const colDelta = toSquare.col - fromSquare.col;
+                const king = movingPiece as King;
+                king.hasMoved = true;
+                if (colDelta === -2) { // move left
+                    const leftRook = this.getPiece(Square.at(fromSquare.row, 0));
+                    this.setPiece(Square.at(fromSquare.row, 3), leftRook);
+                    this.setPiece(Square.at(fromSquare.row, 0), undefined);
+                } else if (colDelta === 2) { // move right
+                    const rightRook = this.getPiece(Square.at(fromSquare.row, 7));
+                    this.setPiece(Square.at(fromSquare.row, 5), rightRook);
+                    this.setPiece(Square.at(fromSquare.row, 7), undefined);
+                }
+            } else if (movingPiece.pieceType === PieceType.ROOK) {
+                (movingPiece as Rook).hasMoved = true;
             }
             this.setPiece(toSquare, movingPiece);
             this.setPiece(fromSquare, undefined);
