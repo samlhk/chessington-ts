@@ -182,6 +182,15 @@ describe('Pawn', () => {
                 });
             });
         });
+
+        it("is promoted to queen upon reaching final row", () => {
+            const pawn = new Pawn(Player.WHITE);
+            board.setPiece(Square.at(6, 0), pawn);
+
+            board.movePiece(Square.at(6, 0), Square.at(7, 0));
+
+            assert(board.getPiece(Square.at(7, 0)) instanceof Queen);
+        })
     });
 
     describe('black pawns', () => {
@@ -351,6 +360,15 @@ describe('Pawn', () => {
                     });
                 });
             });
+        })
+
+        it("is promoted to queen upon reaching final row", () => {
+            const pawn = new Pawn(Player.BLACK);
+            board.setPiece(Square.at(1, 0), pawn);
+
+            board.movePiece(Square.at(1, 0), Square.at(0, 0));
+
+            assert(board.getPiece(Square.at(0, 0)) instanceof Queen);
         })
     });
 
