@@ -12,6 +12,10 @@ export default class Pawn extends Piece {
         this.pieceType = PieceType.PAWN;
     }
 
+    public static isFinalRow(square: Square) {
+        return square.row === 0 || square.row === 7;
+    }
+
     public getAvailableMoves(board: Board): Square[] {
 
         const currentSquare = board.findPiece(this);

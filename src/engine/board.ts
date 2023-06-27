@@ -6,6 +6,7 @@ import Pawn from './pieces/pawn';
 import PieceType from './pieceType';
 import King from './pieces/king';
 import Rook from './pieces/rook';
+import Queen from './pieces/queen';
 
 export default class Board {
     public currentPlayer: Player;
@@ -38,7 +39,7 @@ export default class Board {
     }
 
     public movePiece(fromSquare: Square, toSquare: Square) {
-        const movingPiece = this.getPiece(fromSquare);
+        let movingPiece = this.getPiece(fromSquare);
         if (
             !!movingPiece
             && movingPiece.player === this.currentPlayer
@@ -46,6 +47,9 @@ export default class Board {
             if (movingPiece.pieceType === PieceType.PAWN) {
                 this.recordIfPawnAdvancingTwoSquares(movingPiece, fromSquare, toSquare);
                 this.removePieceIfEnPassantCapture(fromSquare, toSquare);
+                if (Pawn.isFinalRow(toSquare)) {
+                    movingPiece = new Queen(this.currentPlayer);
+                }
             } else if (movingPiece.pieceType === PieceType.KING) {
                 (movingPiece as King).hasMoved = true;
                 this.moveRookIfCastling(fromSquare, toSquare);
