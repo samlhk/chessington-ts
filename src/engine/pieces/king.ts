@@ -7,7 +7,7 @@ import Rook from './rook';
 
 export default class King extends Piece {
     public hasMoved = false;
-    
+
     public constructor(player: Player) {
         super(player);
         this.pieceType = PieceType.KING;
@@ -27,26 +27,41 @@ export default class King extends Piece {
             }
         }
 
+        validMoves.push(...this.getAvailableCastlingMoves(board, currentSquare));
+        
+        return validMoves;
+    }
+
+    private getAvailableCastlingMoves(board: Board, currentSquare: Square) {
+        const validMoves: Square[] = [];
+        
         if (!this.hasMoved) {
-            const possibleRookLeft = board.getPiece(Square.at(currentSquare.row, 0));
-            if (
-                possibleRookLeft?.pieceType === PieceType.ROOK
-                && !(possibleRookLeft as Rook).hasMoved
-                && [3, 2, 1].every((col) => board.getPiece(Square.at(currentSquare.row, col)) === undefined)
-            ) {
+            if (this.validateCastlingLeft(board, currentSquare)) {
                 validMoves.push(Square.at(currentSquare.row, 2));
             }
 
-            const possibleRookRight = board.getPiece(Square.at(currentSquare.row, 7));
-            if (
-                possibleRookRight?.pieceType === PieceType.ROOK
-                && !(possibleRookRight as Rook).hasMoved
-                && [5, 6].every((col) => board.getPiece(Square.at(currentSquare.row, col)) === undefined)
-            ) {
+            if (this.validateCastlingRight(board, currentSquare)) {
                 validMoves.push(Square.at(currentSquare.row, 6));
             }
         }
 
         return validMoves;
+    }
+
+    private validateCastlingLeft(board: Board, currentSquare: Square): boolean {
+        return this.validateCastlingMove(board, currentSquare, true);
+    }
+
+    private validateCastlingRight(board: Board, currentSquare: Square): boolean {
+        return this.validateCastlingMove(board, currentSquare, false);
+    }
+
+    private validateCastlingMove(board: Board, currentSquare: Square, leftSide: boolean): boolean {
+        const possibleRook = board.getPiece(Square.at(currentSquare.row, leftSide ? 0 : 7));
+        const intermediatePositions = leftSide ? [3, 2, 1] : [5, 6];
+
+        return possibleRook?.pieceType === PieceType.ROOK
+            && !(possibleRook as Rook).hasMoved
+            && intermediatePositions.every((col) => !board.getPiece(Square.at(currentSquare.row, col)));
     }
 }

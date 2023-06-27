@@ -47,18 +47,8 @@ export default class Board {
                 this.recordIfPawnAdvancingTwoSquares(movingPiece, fromSquare, toSquare);
                 this.removePieceIfEnPassantCapture(fromSquare, toSquare);
             } else if (movingPiece.pieceType === PieceType.KING) {
-                const colDelta = toSquare.col - fromSquare.col;
-                const king = movingPiece as King;
-                king.hasMoved = true;
-                if (colDelta === -2) { // move left
-                    const leftRook = this.getPiece(Square.at(fromSquare.row, 0));
-                    this.setPiece(Square.at(fromSquare.row, 3), leftRook);
-                    this.setPiece(Square.at(fromSquare.row, 0), undefined);
-                } else if (colDelta === 2) { // move right
-                    const rightRook = this.getPiece(Square.at(fromSquare.row, 7));
-                    this.setPiece(Square.at(fromSquare.row, 5), rightRook);
-                    this.setPiece(Square.at(fromSquare.row, 7), undefined);
-                }
+                (movingPiece as King).hasMoved = true;
+                this.moveRookIfCastling(fromSquare, toSquare);
             } else if (movingPiece.pieceType === PieceType.ROOK) {
                 (movingPiece as Rook).hasMoved = true;
             }
@@ -86,6 +76,19 @@ export default class Board {
     private removePieceIfEnPassantCapture(fromSquare: Square, toSquare: Square) {
         if (Math.abs(toSquare.row - fromSquare.row) === 1 && Math.abs(toSquare.col - fromSquare.col) === 1 && !this.getPiece(toSquare)) {
             this.setPiece(Square.at(fromSquare.row, toSquare.col), undefined);
+        }
+    }
+
+    private moveRookIfCastling(fromSquare: Square, toSquare: Square) {
+        const colDelta = toSquare.col - fromSquare.col;
+        if (colDelta === -2) {
+            const leftRook = this.getPiece(Square.at(fromSquare.row, 0));
+            this.setPiece(Square.at(fromSquare.row, 3), leftRook);
+            this.setPiece(Square.at(fromSquare.row, 0), undefined);
+        } else if (colDelta === 2) {
+            const rightRook = this.getPiece(Square.at(fromSquare.row, 7));
+            this.setPiece(Square.at(fromSquare.row, 5), rightRook);
+            this.setPiece(Square.at(fromSquare.row, 7), undefined);
         }
     }
 }

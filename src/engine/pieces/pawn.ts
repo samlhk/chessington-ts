@@ -27,31 +27,8 @@ export default class Pawn extends Piece {
 
         if (currentSquare.row === endOfBoardRow) return validMoves;
 
-        const adjacentSquares = [
-            Square.at(currentSquare.row, currentSquare.col - 1),
-            Square.at(currentSquare.row, currentSquare.col + 1),
-        ];
-        for (const adjacent of adjacentSquares) {
-            if (adjacent.col >= 0 && adjacent.col < 8) {
-                const pieceOnSquare = board.getPiece(adjacent);
-                if (pieceOnSquare && pieceOnSquare.pieceType === PieceType.PAWN && (board.turnCount - (pieceOnSquare as Pawn).roundAdvancingTwoSquares) === 1) {
-                    validMoves.push(Square.at(adjacent.row + oneStep, adjacent.col));
-                }
-            }
-        }
-
-        const diagonalSquares = [
-            Square.at(currentSquare.row + oneStep, currentSquare.col - 1),
-            Square.at(currentSquare.row + oneStep, currentSquare.col + 1),
-        ];
-        for (const diagonal of diagonalSquares) {
-            if (diagonal.col >= 0 && diagonal.col < 8) {
-                const pieceOnSquare = board.getPiece(diagonal);
-                if (pieceOnSquare && this.canTakePiece(pieceOnSquare)) {
-                    validMoves.push(diagonal);
-                }
-            }
-        }
+        validMoves.push(...this.getDiagonalCaptureMoves(board, currentSquare, oneStep));
+        validMoves.push(...this.getEnPassantCaptureMoves(board, currentSquare, oneStep));
 
         const forwardOneSquare = Square.at(currentSquare.row + oneStep, currentSquare.col);
         if (board.getPiece(forwardOneSquare)) return validMoves;
@@ -67,4 +44,41 @@ export default class Pawn extends Piece {
 
         return validMoves;
     }
+
+    private getDiagonalCaptureMoves(board: Board, currentSquare: Square, oneForwardStep: number): Square[] {
+        return this.getAvailableCaptureMoves(board, currentSquare, oneForwardStep, false);
+    }
+
+    private getEnPassantCaptureMoves(board: Board, currentSquare: Square, oneForwardStep: number): Square[] {
+        return this.getAvailableCaptureMoves(board, currentSquare, oneForwardStep, true);
+    }
+
+    private getAvailableCaptureMoves(board: Board, currentSquare: Square, oneForwardStep: number, enPassantMoves: boolean): Square[] {
+        const validMoves: Square[] = [];
+
+        const capturablePositions = [
+            Square.at(currentSquare.row + (enPassantMoves ? 0 : oneForwardStep), currentSquare.col - 1),
+            Square.at(currentSquare.row + (enPassantMoves ? 0 : oneForwardStep), currentSquare.col + 1),
+        ];
+        for (const pos of capturablePositions) {
+            if (pos.col >= 0 && pos.col < 8) {
+                const pieceOnSquare = board.getPiece(pos);
+                if (pieceOnSquare) {
+                    if (enPassantMoves && this.enPassantIsValid(board.turnCount, pieceOnSquare)) {
+                        validMoves.push(Square.at(pos.row + oneForwardStep, pos.col));
+                    } else if (this.canTakePiece(pieceOnSquare)) {
+                        validMoves.push(pos);
+                    }
+                }
+            }
+        }
+
+        return validMoves;
+    }
+
+    private enPassantIsValid(turnCount: number, pieceOnSquare: Piece) {
+        return pieceOnSquare.pieceType === PieceType.PAWN
+            && (turnCount - (pieceOnSquare as Pawn).roundAdvancingTwoSquares) === 1;
+    }
+
 }
