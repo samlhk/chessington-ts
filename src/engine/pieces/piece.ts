@@ -1,9 +1,12 @@
 import Player from '../player';
 import Board from '../board';
 import Square from '../square';
+import PieceType from '../pieceType';
 
 export default class Piece {
     public player: Player;
+
+    public pieceType?: PieceType;
 
     public constructor(player: Player) {
         this.player = player;
@@ -19,7 +22,7 @@ export default class Piece {
     }
 
     public canTakePiece(otherPiece: Piece): boolean {
-        return this.player !== otherPiece.player && otherPiece.constructor.name !== "King";
+        return this.player !== otherPiece.player && otherPiece.pieceType !== PieceType.KING;
     }
 
     protected getValidMovesInDirectionUntilBoundary(board: Board, start: Square, rowDir: number, colDir: number): Square[] {
@@ -48,7 +51,7 @@ export default class Piece {
             validMoves.push(newSquare);
             newRow += rowDir;
             newCol += colDir;
-            
+
             if (moveMaxOneStep) break;
         }
 

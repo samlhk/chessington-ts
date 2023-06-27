@@ -2,10 +2,12 @@ import Piece from './piece';
 import Player from '../player';
 import Board from '../board';
 import Square from '../square';
+import PieceType from '../pieceType';
 
 export default class Rook extends Piece {
     public constructor(player: Player) {
         super(player);
+        this.pieceType = PieceType.ROOK;
     }
 
     public getAvailableMoves(board: Board): Square[] {

@@ -3,6 +3,7 @@ import GameSettings from './gameSettings';
 import Square from './square';
 import Piece from './pieces/piece';
 import Pawn from './pieces/pawn';
+import PieceType from './pieceType';
 
 export default class Board {
     public currentPlayer: Player;
@@ -40,7 +41,7 @@ export default class Board {
             !!movingPiece
             && movingPiece.player === this.currentPlayer
         ) {
-            if (movingPiece instanceof Pawn) {
+            if (movingPiece.pieceType === PieceType.PAWN) {
                 this.recordPawnAdvancingTwoSquares(movingPiece, fromSquare, toSquare);
                 this.checkEnPasantCapture(fromSquare, toSquare);
             }

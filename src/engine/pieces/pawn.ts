@@ -2,12 +2,14 @@ import Piece from './piece';
 import Player from '../player';
 import Board from '../board';
 import Square from '../square';
+import PieceType from '../pieceType';
 
 export default class Pawn extends Piece {
     public roundAdvancingTwoSquares: number = -1;
 
     public constructor(player: Player) {
         super(player);
+        this.pieceType = PieceType.PAWN;
     }
 
     public getAvailableMoves(board: Board): Square[] {
@@ -32,7 +34,7 @@ export default class Pawn extends Piece {
         for (const adjacent of adjacentSquares) {
             if (adjacent.col >= 0 && adjacent.col < 8) {
                 const pieceOnSquare = board.getPiece(adjacent);
-                if (pieceOnSquare && pieceOnSquare instanceof Pawn && (board.turnCount - (pieceOnSquare as Pawn).roundAdvancingTwoSquares) === 1) {
+                if (pieceOnSquare && pieceOnSquare.pieceType === PieceType.PAWN && (board.turnCount - (pieceOnSquare as Pawn).roundAdvancingTwoSquares) === 1) {
                     validMoves.push(Square.at(adjacent.row + oneStep, adjacent.col));
                 }
             }
