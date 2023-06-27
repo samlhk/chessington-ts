@@ -218,11 +218,11 @@ describe('King', () => {
             let rightRook: Rook;
             beforeEach(() => {
                 board = new Board(Player.BLACK);
-                king = new King(Player.WHITE);
+                king = new King(Player.BLACK);
                 board.setPiece(Square.at(7, 4), king);
-                leftRook = new Rook(Player.WHITE);
+                leftRook = new Rook(Player.BLACK);
                 board.setPiece(Square.at(7, 0), leftRook);
-                rightRook = new Rook(Player.WHITE);
+                rightRook = new Rook(Player.BLACK);
                 board.setPiece(Square.at(7, 7), rightRook);
             });
 
@@ -252,7 +252,7 @@ describe('King', () => {
 
                 board.movePiece(Square.at(7, 4), Square.at(7, 3));
                 board.movePiece(Square.at(0, 0), Square.at(0, 1));
-                board.movePiece(Square.at(7, 4), Square.at(7, 3));
+                board.movePiece(Square.at(7, 3), Square.at(7, 4));
                 board.movePiece(Square.at(0, 1), Square.at(0, 2));
                 
                 const moves = king.getAvailableMoves(board);
