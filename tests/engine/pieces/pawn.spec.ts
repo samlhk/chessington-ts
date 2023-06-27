@@ -191,6 +191,22 @@ describe('Pawn', () => {
 
             assert(board.getPiece(Square.at(7, 0)) instanceof Queen);
         })
+
+        it("can move as queen when promoted", () => {
+            const pawn = new Pawn(Player.WHITE);
+            board.setPiece(Square.at(6, 0), pawn);
+
+            const blackDummy = new Pawn(Player.BLACK);
+            board.setPiece(Square.at(7, 7), blackDummy);
+
+            board.movePiece(Square.at(6, 0), Square.at(7, 0));
+            const newQueen = board.getPiece(Square.at(7, 0));
+
+            board.movePiece(Square.at(7, 7), Square.at(6, 7));
+            board.movePiece(Square.at(7, 0), Square.at(0, 0));
+
+            assert(board.getPiece(Square.at(0, 0)) === newQueen);
+        })
     });
 
     describe('black pawns', () => {
@@ -369,6 +385,22 @@ describe('Pawn', () => {
             board.movePiece(Square.at(1, 0), Square.at(0, 0));
 
             assert(board.getPiece(Square.at(0, 0)) instanceof Queen);
+        })
+
+        it("can move as queen when promoted", () => {
+            const pawn = new Pawn(Player.BLACK);
+            board.setPiece(Square.at(1, 0), pawn);
+
+            const whiteDummy = new Pawn(Player.WHITE);
+            board.setPiece(Square.at(0, 7), whiteDummy);
+
+            board.movePiece(Square.at(1, 0), Square.at(0, 0));
+            const newQueen = board.getPiece(Square.at(0, 0));
+
+            board.movePiece(Square.at(0, 7), Square.at(1, 7));
+            board.movePiece(Square.at(0, 0), Square.at(7, 0));
+
+            assert(board.getPiece(Square.at(7, 0)) === newQueen);
         })
     });
 
